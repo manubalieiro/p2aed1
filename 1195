@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+
+struct Node {
+    struct Node* left;
+    int value;
+    struct Node* right;
+};
+typedef struct Node BinaryTree;
+
+int traversalType;
+
+BinaryTree* FindParent(BinaryTree* root, int value)
+{
+    if (root == NULL)
+        return NULL;
+    else if (value <= root->value) {
+        if (root->left == NULL)
+            return root;
+        else
+            return FindParent(root->left, value);
+    } else {
+        if (root->right == NULL)
+            return root;
+        else
+            return FindParent(root->right, value);
+    }
+}
+
+int PrintBinaryTree(BinaryTree* root)
+{
+    if (root != NULL) {
+        if (traversalType == 1) {
+            printf(" %d", root->value);
+            PrintBinaryTree(root->left);
+            PrintBinaryTree(root->right);
+        }
+        if (traversalType == 2) {
+            PrintBinaryTree(root->left);
+            printf(" %d", root->value);
+            PrintBinaryTree(root->right);
+        }
+        if (traversalType == 3) {
+            PrintBinaryTree(root->left);
+            PrintBinaryTree(root->right);
+            printf(" %d", root->value);
+        }
+    }
+
+    return 0;
+}
+
+int main()
+{
+    BinaryTree* root;
+    BinaryTree* parent;
+    BinaryTree* aux;
+    int size, numCases, c, d, value;
+
+    root = NULL;
+    scanf("%d", &numCases);
+
+    for (c = 1; c <= numCases; c++) {
+        root = NULL;
+
+        scanf("%d", &size);
+        for (d = 0; d < size; d++) {
+            scanf("%d", &value);
+
+            aux = (BinaryTree*)malloc(sizeof(BinaryTree));
+            aux->value = value;
+            aux->left = NULL;
+            aux->right = NULL;
+
+            parent = FindParent(root, value);
+            if (parent == NULL)
+                root = aux;
+            else if (value <= parent->value)
+                parent->left = aux;
+            else
+                parent->right = aux;
+        }
+
+        printf("Case %d:", c);
+
+        printf("\nPre.:");
+        traversalType = 1;
+        PrintBinaryTree(root);
+
+        printf("\nIn..:");
+        traversalType = 2;
+        PrintBinaryTree(root);
+
+        printf("\nPost:");
+        traversalType = 3;
+        PrintBinaryTree(root);
+
+        printf("\n\n");
+    }
+
+    return 0;
+}
